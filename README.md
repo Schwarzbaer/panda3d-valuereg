@@ -12,12 +12,14 @@ set of variables, too, like a game's difficulty settings?
 Usage
 -----
 
+    from direct.showbase.ShowBase import ShowBase
+
     from valuereg import add_value_registry
     from valuereg import ValueListener
 
 
-    # Call this *after* instantiating ShowBase; It adds
-    # `base.value_registry` to it.
+    # Let's get a `base` and add `base.value_registry` to it.
+    ShowBase()
     add_value_registry()
 
     # One way to listen to changes in comfort is to implement a listener
@@ -34,7 +36,7 @@ Usage
     lis.register('foo')
 
     # This should print `foo -> 3`
-    base.value_registry.update(dict(foo=3))
+    base.value_registry.update('foo', 3)
 
     # And we can also stop listening to the changes.
     lis.unregister('foo')
@@ -44,6 +46,7 @@ global like that, or maybe you're not even using Panda3D (you
 magnificient weirdo)! So just can ust create a registry yourself:
 
     from valuereg import ValueRegistry
+    from valuereg import ValueListener
 
 
     # BTW, we can pass the dict of initial values both to the registry
@@ -52,10 +55,21 @@ magnificient weirdo)! So just can ust create a registry yourself:
     reg = ValueRegistry(default_values=dict(foo=0))
     
     # ...but we also *have* to pass the registry to the listener.
+    class PrintingListener(ValueListener):
+        def callback(self, key, value):
+	    print(f'{key} -> {value}')
+
     lis = PrintingListener(registry=reg)
+    lis.register('foo')
+
+    # This should print `foo -> 3`
+    reg.update('foo', 3)
 
 But maybe you're not big on extending `ValueListener`, and would prefer
 just calling methods instead? Go right ahead!
+
+    from valuereg import ValueRegistry
+
 
     # We need something to tell the registry "our" identity, so that we
     # can later unregister again, and the registry knows which callbacks
@@ -63,10 +77,12 @@ just calling methods instead? Go right ahead!
     # long as it is unique.
     token = 0
 
-    my_printer(key, value):
+    def my_printer(key, value):
         print(f'{key} -> {value}')
     
+    reg = ValueRegistry(default_values=dict(foo=0))
     reg.register(token, my_printer, 'foo')
+    reg.update('foo', 3)
 
 
 TODO
