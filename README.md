@@ -46,9 +46,10 @@ magnificient weirdo)! So just can ust create a registry yourself:
     from valuereg import ValueRegistry
 
 
-    # Since we're now creating the registry ourselves, we can simply
-    # pass the keys at creation.
-    reg = ValueRegistry(dict(foo=0))
+    # BTW, we can pass the dict of initial values both to the registry
+    # on creation, or to add_value_registry, using the `default_values`
+    # keyword.
+    reg = ValueRegistry(default_values=dict(foo=0))
     
     # ...but we also *have* to pass the registry to the listener.
     lis = PrintingListener(registry=reg)

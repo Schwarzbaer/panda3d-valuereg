@@ -39,5 +39,7 @@ class ValueListener:
         print(value)
 
 
-def add_value_registry():
-    base.value_registry = ValueRegistry()
+def add_value_registry(default_values=None):
+    base.value_registry = ValueRegistry(
+        default_values=default_values,
+    )
